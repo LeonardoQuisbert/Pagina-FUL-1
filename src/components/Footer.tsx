@@ -257,8 +257,8 @@ export const Footer: React.FC<FooterProps> = ({
         </div>
       </footer>
 
-      {/* BOTÓN FLOTANTE PERMANENTE DE WHATSAPP (ESQUINA INFERIOR DERECHA) */}
-      <aside className="fixed bottom-6 right-6 z-40">
+      {/* BOTÓN FLOTANTE PERMANENTE DE WHATSAPP (ESQUINA INFERIOR DERECHA, POR ENCIMA DEL PIE) */}
+      <aside className="fixed bottom-24 right-4 sm:bottom-24 sm:right-6 z-40">
         <a
           href={buildDynamicWhatsAppUrl(
             portalConfig.whatsappGeneral,
@@ -267,18 +267,18 @@ export const Footer: React.FC<FooterProps> = ({
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Atención directa por WhatsApp FUL UAGRM"
-          className="group relative flex items-center gap-3 px-5 py-3.5 bg-accent text-on-accent rounded-full shadow-2xl hover:scale-105 hover:bg-accent/90 transition-all duration-150 cursor-pointer"
+          className="group relative flex items-center gap-2 sm:gap-2.5 px-4 py-2.5 sm:px-5 sm:py-3 bg-accent text-on-accent rounded-full shadow-2xl hover:scale-105 hover:bg-accent/90 transition-all duration-150 cursor-pointer"
         >
           {/* Indicador de pulso activo */}
-          <span className="absolute -top-1 -right-1 flex h-4 w-4">
+          <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5 sm:h-4 sm:w-4">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-4 w-4 bg-secondary"></span>
+            <span className="relative inline-flex rounded-full h-3.5 w-3.5 sm:h-4 sm:w-4 bg-secondary"></span>
           </span>
 
-          <span className="material-symbols-outlined text-[26px]" aria-hidden="true">
+          <span className="material-symbols-outlined text-[22px] sm:text-[24px]" aria-hidden="true">
             chat
           </span>
-          <span className="font-headline text-label-md font-bold pr-1">Atención FUL</span>
+          <span className="font-headline text-label-md font-bold pr-0.5">Consultas</span>
         </a>
       </aside>
     </>

@@ -137,7 +137,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className="material-symbols-outlined text-[20px]" aria-hidden="true">
                 chat
               </span>
-              <span className="hidden sm:inline">Atención Directa</span>
+              <span className="hidden sm:inline">Whatsapp FUL</span>
               <span className="sm:hidden">WhatsApp</span>
             </a>
 
