@@ -1,0 +1,232 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() &&
+        request.auth.token.email_verified == true &&
+        (
+          request.auth.token.email == "leonardoquisbert@gmail.com" ||
+          exists(/databases/$(database)/documents/admins/$(request.auth.token.email))
+        );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidEmailId(id) {
+      return id is string && id.size() >= 5 && id.size() <= 120 && id.matches('^[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,}$');
+    }
+
+    function isValidUrl(url) {
+      return url is string && url.size() >= 5 && url.size() <= 1500 &&
+        (url.matches("^https://.*") || url.matches("^http://.*") || url.matches("^/images/.*"));
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    function isValidNoticia(data) {
+      return data.keys().hasAll([
+          'titulo', 'categoria', 'fecha', 'resumen',
+          'contenidoCompleto', 'imagenUrl', 'destacada',
+          'archivada', 'autor', 'impactos'
+        ]) &&
+        data.keys().hasOnly([
+          'titulo', 'categoria', 'fecha', 'resumen',
+          'contenidoCompleto', 'imagenUrl', 'destacada',
+          'archivada', 'autor', 'impactos'
+        ]) &&
+        data.titulo is string && data.titulo.size() >= 3 && data.titulo.size() <= 200 &&
+        data.categoria is string && data.categoria in ['Proyección Social', 'Gestión', 'Infraestructura', 'Académico'] &&
+        data.fecha is string && data.fecha.size() >= 3 && data.fecha.size() <= 80 &&
+        data.resumen is string && data.resumen.size() >= 5 && data.resumen.size() <= 600 &&
+        data.contenidoCompleto is string && data.contenidoCompleto.size() >= 10 && data.contenidoCompleto.size() <= 8000 &&
+        isValidUrl(data.imagenUrl) &&
+        data.destacada is bool &&
+        data.archivada is bool &&
+        data.autor is string && data.autor.size() >= 2 && data.autor.size() <= 120 &&
+        data.impactos is list && data.impactos.size() <= 10;
+    }
+
+    function isValidEvento(data) {
+      return data.keys().hasAll([
+          'titulo', 'tipo', 'fechaEvento', 'lugar',
+          'descripcion', 'imagenUrl', 'cupoMaximo',
+          'estado', 'organizador', 'etiquetaCorta'
+        ]) &&
+        data.keys().hasOnly([
+          'titulo', 'tipo', 'fechaEvento', 'lugar',
+          'descripcion', 'imagenUrl', 'cupoMaximo',
+          'estado', 'organizador', 'etiquetaCorta'
+        ]) &&
+        data.titulo is string && data.titulo.size() >= 3 && data.titulo.size() <= 200 &&
+        data.tipo is string && data.tipo in ['Deportivo', 'Académico', 'Cultural', 'Innovación y Negocios'] &&
+        data.fechaEvento is string && data.fechaEvento.size() >= 3 && data.fechaEvento.size() <= 100 &&
+        data.lugar is string && data.lugar.size() >= 3 && data.lugar.size() <= 200 &&
+        data.descripcion is string && data.descripcion.size() >= 5 && data.descripcion.size() <= 4000 &&
+        isValidUrl(data.imagenUrl) &&
+        data.cupoMaximo is number && data.cupoMaximo >= 1 && data.cupoMaximo <= 50000 &&
+        data.estado is string && data.estado in ['Activo', 'Cerrado'] &&
+        data.organizador is string && data.organizador.size() >= 2 && data.organizador.size() <= 150 &&
+        data.etiquetaCorta is string && data.etiquetaCorta.size() >= 2 && data.etiquetaCorta.size() <= 60;
+    }
+
+    function isValidFacebookPost(data) {
+      return data.keys().hasAll([
+          'titulo', 'fecha', 'imagenUrl', 'descripcionCompleta', 'facebookPostUrl'
+        ]) &&
+        data.keys().hasOnly([
+          'titulo', 'fecha', 'imagenUrl', 'descripcionCompleta', 'facebookPostUrl'
+        ]) &&
+        data.titulo is string && data.titulo.size() >= 3 && data.titulo.size() <= 200 &&
+        data.fecha is string && data.fecha.size() >= 3 && data.fecha.size() <= 80 &&
+        isValidUrl(data.imagenUrl) &&
+        data.descripcionCompleta is string && data.descripcionCompleta.size() >= 5 && data.descripcionCompleta.size() <= 6000 &&
+        isValidUrl(data.facebookPostUrl);
+    }
+
+    function isValidTikTokVideo(data) {
+      return data.keys().hasAll([
+          'titulo', 'autorCuenta', 'tiktokUrl', 'miniaturaUrl',
+          'categoria', 'vistas', 'orden'
+        ]) &&
+        data.keys().hasOnly([
+          'titulo', 'autorCuenta', 'tiktokUrl', 'miniaturaUrl',
+          'categoria', 'vistas', 'orden'
+        ]) &&
+        data.titulo is string && data.titulo.size() >= 3 && data.titulo.size() <= 250 &&
+        data.autorCuenta is string && data.autorCuenta.size() >= 2 && data.autorCuenta.size() <= 80 &&
+        isValidUrl(data.tiktokUrl) &&
+        isValidUrl(data.miniaturaUrl) &&
+        data.categoria is string && data.categoria.size() >= 2 && data.categoria.size() <= 50 &&
+        data.vistas is string && data.vistas.size() >= 1 && data.vistas.size() <= 30 &&
+        data.orden is number && data.orden >= 0 && data.orden <= 10000;
+    }
+
+    function isValidFacultad(data) {
+      return data.keys().hasAll(['nombre', 'carreras', 'orden']) &&
+        data.keys().hasOnly(['nombre', 'carreras', 'orden']) &&
+        data.nombre is string && data.nombre.size() >= 3 && data.nombre.size() <= 200 &&
+        data.carreras is list && data.carreras.size() >= 1 && data.carreras.size() <= 25 &&
+        data.orden is number && data.orden >= 0 && data.orden <= 1000;
+    }
+
+    function isValidConfiguracion(data) {
+      return data.keys().hasAll([
+          'whatsappGeneral', 'whatsappDefensoria', 'facebookUrl',
+          'tiktokUrl', 'instagramUrl', 'emailContacto',
+          'direccionCampus', 'horarioAtencion'
+        ]) &&
+        data.keys().hasOnly([
+          'whatsappGeneral', 'whatsappDefensoria', 'facebookUrl',
+          'tiktokUrl', 'instagramUrl', 'emailContacto',
+          'direccionCampus', 'horarioAtencion'
+        ]) &&
+        data.whatsappGeneral is string && data.whatsappGeneral.size() >= 8 && data.whatsappGeneral.size() <= 20 &&
+        data.whatsappDefensoria is string && data.whatsappDefensoria.size() >= 8 && data.whatsappDefensoria.size() <= 20 &&
+        isValidUrl(data.facebookUrl) &&
+        isValidUrl(data.tiktokUrl) &&
+        isValidUrl(data.instagramUrl) &&
+        data.emailContacto is string && data.emailContacto.size() >= 5 && data.emailContacto.size() <= 120 &&
+        data.direccionCampus is string && data.direccionCampus.size() >= 5 && data.direccionCampus.size() <= 250 &&
+        data.horarioAtencion is string && data.horarioAtencion.size() >= 5 && data.horarioAtencion.size() <= 150;
+    }
+
+    function isValidInscrito(data) {
+      return data.keys().hasAll([
+          'codigoConfirmacion', 'eventoId', 'eventoTitulo',
+          'nombre', 'registroUniversitario', 'facultad',
+          'carrera', 'whatsapp', 'fechaRegistro'
+        ]) &&
+        data.keys().hasOnly([
+          'codigoConfirmacion', 'eventoId', 'eventoTitulo',
+          'nombre', 'registroUniversitario', 'facultad',
+          'carrera', 'whatsapp', 'fechaRegistro'
+        ]) &&
+        data.codigoConfirmacion is string && data.codigoConfirmacion.size() >= 6 && data.codigoConfirmacion.size() <= 40 &&
+        data.eventoId is string && data.eventoId.size() >= 1 && data.eventoId.size() <= 128 &&
+        data.eventoTitulo is string && data.eventoTitulo.size() >= 2 && data.eventoTitulo.size() <= 200 &&
+        data.nombre is string && data.nombre.size() >= 5 && data.nombre.size() <= 150 &&
+        data.registroUniversitario is string && data.registroUniversitario.matches('^[0-9]{8,9}$') &&
+        data.facultad is string && data.facultad.size() >= 3 && data.facultad.size() <= 200 &&
+        data.carrera is string && data.carrera.size() >= 2 && data.carrera.size() <= 150 &&
+        data.whatsapp is string && data.whatsapp.size() >= 7 && data.whatsapp.size() <= 20 &&
+        data.fechaRegistro is string && data.fechaRegistro.size() >= 3 && data.fechaRegistro.size() <= 80;
+    }
+
+    function isValidAdminUser(data) {
+      return data.keys().hasAll(['email', 'nombre', 'agregadoPor', 'fechaAlta']) &&
+        data.keys().hasOnly(['email', 'nombre', 'agregadoPor', 'fechaAlta']) &&
+        isValidEmailId(data.email) &&
+        data.nombre is string && data.nombre.size() >= 2 && data.nombre.size() <= 120 &&
+        isValidEmailId(data.agregadoPor) &&
+        data.fechaAlta is string && data.fechaAlta.size() >= 3 && data.fechaAlta.size() <= 80;
+    }
+
+    // ===============================================================
+    // Collection Rules
+    // ===============================================================
+
+    match /noticias/{noticiaId} {
+      allow get, list: if true;
+      allow create, update: if isAdmin() && isValidId(noticiaId) && isValidNoticia(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /eventos/{eventoId} {
+      allow get, list: if true;
+      allow create, update: if isAdmin() && isValidId(eventoId) && isValidEvento(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /facebook_posts/{postId} {
+      allow get, list: if true;
+      allow create, update: if isAdmin() && isValidId(postId) && isValidFacebookPost(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /tiktok_videos/{videoId} {
+      allow get, list: if true;
+      allow create, update: if isAdmin() && isValidId(videoId) && isValidTikTokVideo(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /facultades/{facultadId} {
+      allow get, list: if true;
+      allow create, update: if isAdmin() && isValidId(facultadId) && isValidFacultad(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /configuracion/{configId} {
+      allow get, list: if true;
+      allow create, update: if isAdmin() && isValidId(configId) && isValidConfiguracion(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /inscritos/{inscritoId} {
+      allow get, list: if isAdmin();
+      allow create: if isValidId(inscritoId) && isValidInscrito(request.resource.data);
+      allow update: if isAdmin() && isValidId(inscritoId) && isValidInscrito(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /admins/{adminId} {
+      allow get: if isSignedIn() && request.auth.token.email_verified == true && (request.auth.token.email == adminId || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isAdmin() && isValidEmailId(adminId) && isValidAdminUser(request.resource.data) && request.resource.data.email == adminId;
+      allow update: if isAdmin() && isValidEmailId(adminId) && isValidAdminUser(request.resource.data) && request.resource.data.email == resource.data.email && request.resource.data.agregadoPor == resource.data.agregadoPor;
+      allow delete: if isAdmin();
+    }
+  }
+}

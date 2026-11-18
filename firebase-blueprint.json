@@ -1,0 +1,493 @@
+{
+  "entities": {
+    "Noticia": {
+      "title": "Noticia",
+      "description": "Noticias, proyectos y comunicados web del portal oficial de la FUL UAGRM.",
+      "type": "object",
+      "properties": {
+        "titulo": {
+          "type": "string",
+          "description": "Título de la noticia o comunicado.",
+          "minLength": 3,
+          "maxLength": 200
+        },
+        "categoria": {
+          "type": "string",
+          "description": "Categoría editorial de la noticia.",
+          "enum": ["Proyección Social", "Gestión", "Infraestructura", "Académico"],
+          "minLength": 3,
+          "maxLength": 60
+        },
+        "fecha": {
+          "type": "string",
+          "description": "Fecha visible de publicación.",
+          "minLength": 3,
+          "maxLength": 80
+        },
+        "resumen": {
+          "type": "string",
+          "description": "Resumen corto de la noticia para la tarjeta.",
+          "minLength": 5,
+          "maxLength": 600
+        },
+        "contenidoCompleto": {
+          "type": "string",
+          "description": "Cuerpo íntegro del artículo o comunicado.",
+          "minLength": 10,
+          "maxLength": 8000
+        },
+        "imagenUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL de la imagen principal de la noticia.",
+          "minLength": 5,
+          "maxLength": 1500
+        },
+        "destacada": {
+          "type": "boolean",
+          "description": "Indica si la noticia está activa/destacada en portada."
+        },
+        "archivada": {
+          "type": "boolean",
+          "description": "Indica si la noticia está archivada."
+        },
+        "autor": {
+          "type": "string",
+          "description": "Autor o secretaría emisora.",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "impactos": {
+          "type": "array",
+          "description": "Lista acotada de puntos clave de impacto (máximo 10).",
+          "maxLength": 10
+        }
+      },
+      "required": [
+        "titulo",
+        "categoria",
+        "fecha",
+        "resumen",
+        "contenidoCompleto",
+        "imagenUrl",
+        "destacada",
+        "archivada",
+        "autor"
+      ]
+    },
+    "Evento": {
+      "title": "Evento",
+      "description": "Convocatorias y eventos universitarios organizados por la FUL UAGRM.",
+      "type": "object",
+      "properties": {
+        "titulo": {
+          "type": "string",
+          "description": "Nombre oficial del evento o convocatoria.",
+          "minLength": 3,
+          "maxLength": 200
+        },
+        "tipo": {
+          "type": "string",
+          "description": "Tipo o categoría de la convocatoria.",
+          "enum": ["Deportivo", "Académico", "Cultural", "Innovación y Negocios"],
+          "minLength": 3,
+          "maxLength": 60
+        },
+        "fechaEvento": {
+          "type": "string",
+          "description": "Fecha o rango de fechas del evento.",
+          "minLength": 3,
+          "maxLength": 100
+        },
+        "lugar": {
+          "type": "string",
+          "description": "Ubicación física del evento en el campus.",
+          "minLength": 3,
+          "maxLength": 200
+        },
+        "descripcion": {
+          "type": "string",
+          "description": "Descripción y bases de la convocatoria.",
+          "minLength": 5,
+          "maxLength": 4000
+        },
+        "imagenUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL del afiche o fotografía del evento.",
+          "minLength": 5,
+          "maxLength": 1500
+        },
+        "cupoMaximo": {
+          "type": "number",
+          "description": "Cupo máximo de participantes o equipos."
+        },
+        "estado": {
+          "type": "string",
+          "description": "Estado de la convocatoria.",
+          "enum": ["Activo", "Cerrado"],
+          "minLength": 5,
+          "maxLength": 20
+        },
+        "organizador": {
+          "type": "string",
+          "description": "Secretaría organizadora de la FUL.",
+          "minLength": 2,
+          "maxLength": 150
+        },
+        "etiquetaCorta": {
+          "type": "string",
+          "description": "Texto corto de insignia en la tarjeta.",
+          "minLength": 2,
+          "maxLength": 60
+        }
+      },
+      "required": [
+        "titulo",
+        "tipo",
+        "fechaEvento",
+        "lugar",
+        "descripcion",
+        "imagenUrl",
+        "cupoMaximo",
+        "estado",
+        "organizador",
+        "etiquetaCorta"
+      ]
+    },
+    "FacebookPost": {
+      "title": "FacebookPost",
+      "description": "Comunicados gráficos y galería oficial de Facebook de la FUL UAGRM.",
+      "type": "object",
+      "properties": {
+        "titulo": {
+          "type": "string",
+          "description": "Título del comunicado de Facebook.",
+          "minLength": 3,
+          "maxLength": 200
+        },
+        "fecha": {
+          "type": "string",
+          "description": "Fecha de publicación.",
+          "minLength": 3,
+          "maxLength": 80
+        },
+        "imagenUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL del afiche o imagen en alta resolución.",
+          "minLength": 5,
+          "maxLength": 1500
+        },
+        "descripcionCompleta": {
+          "type": "string",
+          "description": "Texto íntegro del comunicado publicado en Facebook.",
+          "minLength": 5,
+          "maxLength": 6000
+        },
+        "facebookPostUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "Enlace directo a la publicación original en Facebook.",
+          "minLength": 5,
+          "maxLength": 1000
+        }
+      },
+      "required": [
+        "titulo",
+        "fecha",
+        "imagenUrl",
+        "descripcionCompleta",
+        "facebookPostUrl"
+      ]
+    },
+    "TikTokVideo": {
+      "title": "TikTokVideo",
+      "description": "Enlaces de videos verticales de TikTok publicados por la FUL UAGRM.",
+      "type": "object",
+      "properties": {
+        "titulo": {
+          "type": "string",
+          "description": "Título o descripción del Reel de TikTok.",
+          "minLength": 3,
+          "maxLength": 250
+        },
+        "autorCuenta": {
+          "type": "string",
+          "description": "Cuenta de TikTok autora del video (ej. @ful.uagrm).",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "tiktokUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL del video en TikTok.",
+          "minLength": 5,
+          "maxLength": 1000
+        },
+        "miniaturaUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL de la miniatura vertical 9:16.",
+          "minLength": 5,
+          "maxLength": 1500
+        },
+        "categoria": {
+          "type": "string",
+          "description": "Categoría temática del video.",
+          "minLength": 2,
+          "maxLength": 50
+        },
+        "vistas": {
+          "type": "string",
+          "description": "Contador de reproducciones formateado.",
+          "minLength": 1,
+          "maxLength": 30
+        },
+        "orden": {
+          "type": "number",
+          "description": "Orden numérico de visualización en la cuadrícula."
+        }
+      },
+      "required": [
+        "titulo",
+        "autorCuenta",
+        "tiktokUrl",
+        "miniaturaUrl",
+        "categoria",
+        "vistas",
+        "orden"
+      ]
+    },
+    "Inscrito": {
+      "title": "Inscrito",
+      "description": "Registro de estudiante inscrito en una convocatoria desde el formulario público.",
+      "type": "object",
+      "properties": {
+        "codigoConfirmacion": {
+          "type": "string",
+          "description": "Código único generado al confirmar la inscripción.",
+          "minLength": 6,
+          "maxLength": 40
+        },
+        "eventoId": {
+          "type": "string",
+          "description": "ID del evento al que se inscribe.",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "eventoTitulo": {
+          "type": "string",
+          "description": "Título del evento al que se inscribe.",
+          "minLength": 2,
+          "maxLength": 200
+        },
+        "nombre": {
+          "type": "string",
+          "description": "Nombre completo del estudiante.",
+          "minLength": 5,
+          "maxLength": 150
+        },
+        "registroUniversitario": {
+          "type": "string",
+          "description": "Número de Registro Universitario UAGRM (8 a 9 dígitos).",
+          "minLength": 8,
+          "maxLength": 9,
+          "pattern": "^[0-9]{8,9}$"
+        },
+        "facultad": {
+          "type": "string",
+          "description": "Facultad seleccionada.",
+          "minLength": 3,
+          "maxLength": 200
+        },
+        "carrera": {
+          "type": "string",
+          "description": "Carrera seleccionada.",
+          "minLength": 2,
+          "maxLength": 150
+        },
+        "whatsapp": {
+          "type": "string",
+          "description": "Teléfono / WhatsApp del estudiante.",
+          "minLength": 7,
+          "maxLength": 20
+        },
+        "fechaRegistro": {
+          "type": "string",
+          "description": "Fecha legible de inscripción.",
+          "minLength": 3,
+          "maxLength": 80
+        }
+      },
+      "required": [
+        "codigoConfirmacion",
+        "eventoId",
+        "eventoTitulo",
+        "nombre",
+        "registroUniversitario",
+        "facultad",
+        "carrera",
+        "whatsapp",
+        "fechaRegistro"
+      ]
+    },
+    "FacultadCatalogo": {
+      "title": "FacultadCatalogo",
+      "description": "Catálogo dinámico de Facultades y Carreras de la UAGRM para el formulario de inscripción.",
+      "type": "object",
+      "properties": {
+        "nombre": {
+          "type": "string",
+          "description": "Nombre oficial de la Facultad.",
+          "minLength": 3,
+          "maxLength": 200
+        },
+        "carreras": {
+          "type": "array",
+          "description": "Lista de carreras de la facultad (máximo 20).",
+          "maxLength": 20
+        },
+        "orden": {
+          "type": "number",
+          "description": "Orden de aparición."
+        }
+      },
+      "required": ["nombre", "carreras", "orden"]
+    },
+    "ConfiguracionPortal": {
+      "title": "ConfiguracionPortal",
+      "description": "Configuración general de números de WhatsApp y enlaces de redes sociales de la FUL UAGRM.",
+      "type": "object",
+      "properties": {
+        "whatsappGeneral": {
+          "type": "string",
+          "description": "Número principal de WhatsApp con código de país (ej. 59175562627).",
+          "minLength": 8,
+          "maxLength": 20
+        },
+        "whatsappDefensoria": {
+          "type": "string",
+          "description": "Número de WhatsApp de Defensoría y Atención Estudiantil.",
+          "minLength": 8,
+          "maxLength": 20
+        },
+        "facebookUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL oficial de Facebook de la FUL UAGRM.",
+          "minLength": 5,
+          "maxLength": 500
+        },
+        "tiktokUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL oficial de TikTok de la FUL UAGRM.",
+          "minLength": 5,
+          "maxLength": 500
+        },
+        "instagramUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL oficial de Instagram de la FUL UAGRM.",
+          "minLength": 5,
+          "maxLength": 500
+        },
+        "emailContacto": {
+          "type": "string",
+          "description": "Correo electrónico institucional.",
+          "minLength": 5,
+          "maxLength": 120
+        },
+        "direccionCampus": {
+          "type": "string",
+          "description": "Dirección física en el Campus Universitario.",
+          "minLength": 5,
+          "maxLength": 250
+        },
+        "horarioAtencion": {
+          "type": "string",
+          "description": "Horario de atención continua.",
+          "minLength": 5,
+          "maxLength": 150
+        }
+      },
+      "required": [
+        "whatsappGeneral",
+        "whatsappDefensoria",
+        "facebookUrl",
+        "tiktokUrl",
+        "instagramUrl",
+        "emailContacto",
+        "direccionCampus",
+        "horarioAtencion"
+      ]
+    },
+    "AdminUser": {
+      "title": "AdminUser",
+      "description": "Correo electrónico de colaborador autorizado para acceder al panel /admin.",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "Correo de Google autorizado en minúsculas.",
+          "minLength": 5,
+          "maxLength": 120
+        },
+        "nombre": {
+          "type": "string",
+          "description": "Nombre o cargo del colaborador en la FUL.",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "agregadoPor": {
+          "type": "string",
+          "description": "Correo del administrador que lo autorizó.",
+          "minLength": 5,
+          "maxLength": 120
+        },
+        "fechaAlta": {
+          "type": "string",
+          "description": "Fecha de registro del administrador.",
+          "minLength": 3,
+          "maxLength": 80
+        }
+      },
+      "required": ["email", "nombre", "agregadoPor", "fechaAlta"]
+    }
+  },
+  "firestore": {
+    "/noticias/{noticiaId}": {
+      "schema": { "$ref": "#/entities/Noticia" },
+      "description": "Colección pública de noticias y comunicados web."
+    },
+    "/eventos/{eventoId}": {
+      "schema": { "$ref": "#/entities/Evento" },
+      "description": "Colección pública de eventos y convocatorias vigentes o cerradas."
+    },
+    "/facebook_posts/{postId}": {
+      "schema": { "$ref": "#/entities/FacebookPost" },
+      "description": "Colección pública de comunicados y galería en Facebook."
+    },
+    "/tiktok_videos/{videoId}": {
+      "schema": { "$ref": "#/entities/TikTokVideo" },
+      "description": "Colección pública de videos verticales de TikTok."
+    },
+    "/facultades/{facultadId}": {
+      "schema": { "$ref": "#/entities/FacultadCatalogo" },
+      "description": "Catálogo público de facultades y carreras para el formulario de inscripción."
+    },
+    "/configuracion/{configId}": {
+      "schema": { "$ref": "#/entities/ConfiguracionPortal" },
+      "description": "Documento de configuración general del portal (WhatsApp, redes, horarios)."
+    },
+    "/inscritos/{inscritoId}": {
+      "schema": { "$ref": "#/entities/Inscrito" },
+      "description": "Colección privada de estudiantes inscritos (creación pública validada, lectura/borrado solo administradores)."
+    },
+    "/admins/{adminId}": {
+      "schema": { "$ref": "#/entities/AdminUser" },
+      "description": "Colección de colaboradores administradores autorizados."
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "FUL 2026-2028 | Portal Oficial UAGRM",
+  "description": "Portal Oficial de la Federación Universitaria Local (FUL 2026-2028) de la Universidad Autónoma Gabriel René Moreno (UAGRM) en Santa Cruz de la Sierra, Bolivia.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
