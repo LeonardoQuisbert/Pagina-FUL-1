@@ -255,6 +255,100 @@ export const UAGRM_FACULTIES: FacultyOption[] = [
   },
 ];
 
+export const EVENT_DEFAULT_IMAGES = {
+  futsal: '/images/evento_futsal_uagrm.jpg',
+  emprendimiento: '/images/evento_feria_emprendimiento.jpg',
+  ballet: '/images/evento_ballet_folklorico.jpg',
+  nivelacion: '/images/evento_cursos_nivelacion.jpg',
+  congreso: '/images/evento_congreso_liderazgo.jpg',
+  hackathon: '/images/evento_hackathon_campus.jpg',
+} as const;
+
+export function resolveEventImage(
+  imageUrl: string | undefined,
+  category: EventCategory,
+  titleOrId = ''
+): string {
+  const trimmed = (imageUrl || '').trim();
+  const isExpiredAidaUrl = trimmed.includes('lh3.googleusercontent.com/aida/');
+  if (trimmed && !isExpiredAidaUrl) {
+    return trimmed;
+  }
+
+  const normalized = titleOrId
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+
+  if (
+    normalized.includes('futsal') ||
+    normalized.includes('deport') ||
+    normalized.includes('campeonato') ||
+    normalized.includes('card-event-1') ||
+    normalized.includes('card_event_1')
+  ) {
+    return EVENT_DEFAULT_IMAGES.futsal;
+  }
+  if (
+    normalized.includes('hackathon') ||
+    normalized.includes('digital') ||
+    normalized.includes('codigo') ||
+    normalized.includes('card-event-6') ||
+    normalized.includes('card_event_6')
+  ) {
+    return EVENT_DEFAULT_IMAGES.hackathon;
+  }
+  if (
+    normalized.includes('emprend') ||
+    normalized.includes('feria') ||
+    normalized.includes('negocio') ||
+    normalized.includes('card-event-2') ||
+    normalized.includes('card_event_2')
+  ) {
+    return EVENT_DEFAULT_IMAGES.emprendimiento;
+  }
+  if (
+    normalized.includes('ballet') ||
+    normalized.includes('folklor') ||
+    normalized.includes('entrada') ||
+    normalized.includes('danza') ||
+    normalized.includes('card-event-3') ||
+    normalized.includes('card_event_3')
+  ) {
+    return EVENT_DEFAULT_IMAGES.ballet;
+  }
+  if (
+    normalized.includes('congreso') ||
+    normalized.includes('liderazgo') ||
+    normalized.includes('investigacion') ||
+    normalized.includes('card-event-5') ||
+    normalized.includes('card_event_5')
+  ) {
+    return EVENT_DEFAULT_IMAGES.congreso;
+  }
+  if (
+    normalized.includes('nivelacion') ||
+    normalized.includes('auxiliatura') ||
+    normalized.includes('curso') ||
+    normalized.includes('card-event-4') ||
+    normalized.includes('card_event_4')
+  ) {
+    return EVENT_DEFAULT_IMAGES.nivelacion;
+  }
+
+  switch (category) {
+    case 'Deporte':
+      return EVENT_DEFAULT_IMAGES.futsal;
+    case 'Innovación y Negocios':
+      return EVENT_DEFAULT_IMAGES.emprendimiento;
+    case 'Cultura':
+      return EVENT_DEFAULT_IMAGES.ballet;
+    case 'Académico':
+    default:
+      return EVENT_DEFAULT_IMAGES.nivelacion;
+  }
+}
+
 export const PORTAL_EVENTS: EventItem[] = [
   {
     id: 'card-event-1',
@@ -268,8 +362,7 @@ export const PORTAL_EVENTS: EventItem[] = [
     shortDate: '24 de Noviembre, 2026',
     description:
       'Inscribe el representativo de tu carrera para el torneo deportivo más grande del campus universitario. Premios y trofeos FUL.',
-    image:
-      'https://lh3.googleusercontent.com/aida/ALJJyrCKBSGA7RRydyKunseIlbHLZnzzjTCzagjbqx-Naml6FZipzOz2UqvTe3ZgX67ENMsQ1hID-31MbA7wMTdhs5LP_oEhS7vqO9AyGzGhGFK-HilQbwLoPSUE7QQCBgqdPJLky_6Ooe_JiORJq69Agft2gvA3HeKfJSgVT3G0Lw3nusQGz-yM7gn53hU1awYFKPYYWomfr8sxzO0TEvXGP5ODmWvD7trPyx2nK1PeRR04mS4TZwW3',
+    image: '/images/evento_futsal_uagrm.jpg',
     location: 'Coliseo Polideportivo Ciudad Universitaria (2do Anillo)',
     organizer: 'Secretaría de Deportes y Recreación FUL UAGRM',
     quota: 'Hasta 2 selecciones por carrera (Categorías Damas y Varones)',
@@ -299,8 +392,7 @@ export const PORTAL_EVENTS: EventItem[] = [
     shortDate: '02 al 04 de Diciembre, 2026',
     description:
       'Espacio de exposición comercial y capital semilla para proyectos y emprendimientos de estudiantes morenianos.',
-    image:
-      'https://lh3.googleusercontent.com/aida/ALJJyrA5Y3JnmsGGhhuJ1YFPIw7uouyxjT6zXzWjCosDp5xrEJSDf7Rwk0fGofGLe_Wr7PvnwCHYcky8_vQIPbOrL2n3UkQQwamMGrmiQBfeDoWCWTnOoqMDj7r_hIv773uuXoS8XwX_Q5o9LFi0K1D45fZUsDvMYeZdXljCSyw10spHKb9gnLQSsNXnCSlXqzcg2z_Bp6W6smBDSn1LaM6ApjCsmMzgsP0WEaNVHafN2xm27by3LT_x1Gwp3n_NPDor7V4m9U0',
+    image: '/images/evento_feria_emprendimiento.jpg',
     location: 'Explanada Central de Módulos UAGRM',
     organizer: 'Secretaría de Innovación, Proyectos y Desarrollo Estudiantil FUL',
     quota: '120 stands equipados sin costo para estudiantes emprendedores',
@@ -330,8 +422,7 @@ export const PORTAL_EVENTS: EventItem[] = [
     shortDate: 'Convocatoria Abierta 2026',
     description:
       'Forma parte del elenco oficial que representará a la UAGRM en festivales departamentales y la gran entrada folklórica.',
-    image:
-      'https://lh3.googleusercontent.com/aida/ALJJyrAhmcyHXi37enHlKiOCONuitdLmMxvP5mRpMQVvsUtQm_OxwqG7m2MHPeUfRhdIub4i8R08Z07AOlo-fCJcsEcdrOasqrABS5CCL3BcknzAUyB5Sc2gm763U4ZNpnqAhJnywAIn6IpdKv3IXjRaCbzlrbR-w41wjeerSxCf6Yea8Sl-pnBUcW6Js496a80F7VmoQWE4V_cTr0Qc2gLeGszdSS-gfXxG99gnS2_HVR0F4HwWZHorIYLlJC2UT2A4cOo',
+    image: '/images/evento_ballet_folklorico.jpg',
     location: 'Salón de Ensayos Paraninfo Universitario y Edificio FUL',
     organizer: 'Secretaría de Cultura y Folklore Moreniano FUL',
     quota: '80 plazas para bailarines y músicos de todas las facultades',
@@ -361,8 +452,7 @@ export const PORTAL_EVENTS: EventItem[] = [
     shortDate: 'Inicio: 01 de Diciembre',
     description:
       'Refuerzo gratuito en Cálculo, Física, Química y Metodología de Investigación dictado por auxiliares de docencia destacados.',
-    image:
-      'https://lh3.googleusercontent.com/aida/ALJJyrCRNRBwB5SKOjNd9rcYJqX2hXy9Vk6meDIJYCsKsXj8lD8-i7NKN_TkUK4hat-TUrLeMAw3-wgvh-U4vnIOKtu-v34XHNiWKl2_zYG5Negzm5EzJoK5qM6GU1qvHjRaZF2slgoza4nmjAp7gGUVZciLQGBFKiZI9W_6_NACC8zj8LzsOV3AFrMS0XtVzTTyyJ09yNJ7rnI4kkuFYqE1cCJPyRkXIvaD3fNZ_FfoACRQZYTrMKvX7W_2jcyE',
+    image: '/images/evento_cursos_nivelacion.jpg',
     location: 'Aulas Magnas Módulos 212, 224 y 236 - Ciudad Universitaria',
     organizer: 'Secretaría Académica y Científica FUL UAGRM',
     quota: 'Cupos por paralelo de 60 estudiantes (Turnos mañana, tarde y noche)',
@@ -392,8 +482,7 @@ export const PORTAL_EVENTS: EventItem[] = [
     shortDate: '11 y 12 de Diciembre, 2026',
     description:
       'Ponencias magistrales, mesas de investigación estudiantil y certificación oficial con carga horaria académica para todas las carreras.',
-    image:
-      'https://lh3.googleusercontent.com/aida/ALJJyrCRN7vDCVYwLWh5AK52pPauR0Y6XROeJKO5XeJJUNIV_YfmypmMyo6IwTy5BgQKfbbbVw86WSGOPBdReMgw_s3ic_B25foXJ3_YA7VmnJkdlEclT5qs4ytdF5B4GC4EJsxJpkaONgAKN3d3eU5jgne0D2twduNJ6zM2tbGsK3bLFS06C23lb0vAwHRJYM_bXEcIhuDdGqLW4cSV-nsTdqluLIBpIhrYXm7XFtaA6XC_Xpo6CBpbO85E',
+    image: '/images/evento_congreso_liderazgo.jpg',
     location: 'Salón Auditorio de los Módulos UAGRM',
     organizer: 'Secretaría Ejecutiva y Comisión Académica FUL',
     quota: '400 participantes acreditados',
@@ -422,8 +511,7 @@ export const PORTAL_EVENTS: EventItem[] = [
     shortDate: '18 y 19 de Diciembre, 2026',
     description:
       'Maratón de 36 horas para desarrollar aplicaciones, automatización de trámites estudiantiles y soluciones smart-campus en la UAGRM.',
-    image:
-      'https://lh3.googleusercontent.com/aida/ALJJyrA1_xrfzppQO4tlZxq5xWzZ2aQ_nMqPDqRCMJT809u0bz0J82csWF6_DBUZ-GvN7whm_cF-TBLQDLbcrsF3qRKK7aWG-g-uF4Pedi4Ce_j8CCix76AGnLBiiX3R5scgM8_YsxKg0VnJqoZju-iiukUhTL1u7hB8mxWACulgnk2PT_5LGATHe4KiHT5qyA_dhQ-TdyVZ3Koxl78scBGPFYVHYE1szOlrxjWAPIrv9or4BSNBiLEM59w5i6BXrnfy',
+    image: '/images/evento_hackathon_campus.jpg',
     location: 'Laboratorios de Cómputo y Sala de Estudio FUL',
     organizer: 'Secretaría de Ciencia y Tecnología FUL UAGRM',
     quota: '30 equipos multidisciplinarios (de 3 a 5 estudiantes)',

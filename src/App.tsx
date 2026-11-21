@@ -24,6 +24,7 @@ import {
   PortalViewId,
   ReelItem,
   RegulationDoc,
+  resolveEventImage,
   STUDENT_SERVICES,
   TIKTOK_REELS,
   UAGRM_FACULTIES,
@@ -364,8 +365,16 @@ export default function App() {
       >
         <div className="relative h-48 overflow-hidden bg-primary/10">
           <img
-            src={ev.image}
+            src={resolveEventImage(ev.image, ev.category, `${ev.id} ${ev.title}`)}
             alt={ev.title}
+            referrerPolicy="no-referrer"
+            onError={(e) => {
+              const target = e.currentTarget;
+              if (!target.dataset.fallbackApplied) {
+                target.dataset.fallbackApplied = 'true';
+                target.src = resolveEventImage('', ev.category, `${ev.id} ${ev.title}`);
+              }
+            }}
             className="w-full h-full object-cover"
           />
           <span
@@ -422,173 +431,93 @@ export default function App() {
            ========================================================= */}
         {activeView === 'inicio' && (
           <>
-            {/* 2. HERO SECTION (BANNER PRINCIPAL) */}
-            <section className="relative bg-primary text-on-primary overflow-hidden border-b border-primary/20">
-              {/* Fotografía sutil de fondo del campus universitario de la UAGRM con degradado Azul Marino */}
-              <div className="absolute inset-0 z-0">
+            {/* 2. HERO SECTION (BANNER PRINCIPAL DINÁMICO) */}
+            <section className="relative bg-[#002855] text-white overflow-hidden border-b border-primary/20 min-h-[460px] sm:min-h-[520px] lg:min-h-[560px] flex items-center">
+              {/* Fotografía de los estudiantes en el campus frente a los pabellones de ladrillo (lado derecho) */}
+              <div className="absolute inset-y-0 right-0 w-full lg:w-[64%] z-0 overflow-hidden">
                 <img
-                  src={OFFICIAL_LOGOS.heroCampusBg}
-                  alt="Campus Universitario UAGRM Santa Cruz"
-                  className="w-full h-full object-cover object-center opacity-25 brightness-90 mix-blend-overlay"
+                  src="/images/hero_campus_estudiantes.jpg"
+                  alt="Estudiantes de la UAGRM frente a los pabellones de ladrillo del campus universitario"
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-cover object-[center_30%] lg:object-right scale-[1.01]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/95 to-primary/80"></div>
+                {/* Transición fluida de azul marino profundo desde la izquierda hacia la fotografía */}
+                <div className="absolute inset-0 bg-gradient-to-r from-[#002855] via-[#002855]/85 lg:via-[#002855]/60 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#002855]/85 via-transparent to-[#002855]/45 lg:hidden"></div>
               </div>
 
-              {/* Patrón geométrico sutil institucional */}
-              <div className="absolute inset-0 z-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px] opacity-10 pointer-events-none"></div>
+              {/* Formas geométricas dinámicas superpuestas (Azul, Rojo y Amarillo) */}
+              <svg
+                className="absolute inset-0 w-full h-full z-[1] pointer-events-none select-none"
+                viewBox="0 0 1440 580"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                {/* Franja diagonal azul brillante superior izquierda */}
+                <polygon points="0,0 590,0 0,210" fill="#004C97" opacity="0.65" />
+                <polygon points="0,0 320,0 0,130" fill="#0056AD" opacity="0.45" />
 
-              <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28 flex flex-col lg:flex-row items-center justify-between gap-12">
-                {/* Columna Texto Principal Hero */}
-                <div className="max-w-3xl space-y-6 text-center lg:text-left">
-                  {/* Insignia de Gestión Oficial */}
-                  <div className="inline-flex flex-wrap items-center justify-center lg:justify-start gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-xs border border-white/20 text-white shadow-xs max-w-full">
-                    <span className="w-2.5 h-2.5 rounded-full bg-secondary shrink-0"></span>
-                    <span className="font-headline text-[11px] sm:text-label-md font-bold tracking-wide uppercase text-center">
-                      FUL · UAGRM
-                    </span>
-                    <span className="text-accent font-mono font-bold text-xs bg-white/10 px-2 py-0.5 rounded">
-                      2026-2028
-                    </span>
-                  </div>
+                {/* Acentos geométricos rojo y amarillo en borde izquierdo */}
+                <polygon points="0,285 78,195 0,435" fill="#E11D2E" />
+                <polygon points="0,375 36,396 0,535" fill="#FACC15" />
 
-                  {/* Título Principal */}
-                  <h1 className="font-headline text-headline-lg-mobile md:text-display-lg text-white font-extrabold tracking-tight text-balance leading-tight">
-                    Tu voz y representación en la UAGRM —{' '}
-                    <span className="text-white border-b-4 border-secondary pb-1">
-                      Gestión 2026-2028
+                {/* Curva azul inferior derecha y diagonales rojas/amarillas */}
+                <path
+                  d="M920,580 Q1160,485 1440,515 L1440,580 Z"
+                  fill="#1D3A7A"
+                  opacity="0.92"
+                />
+                <polygon points="1365,0 1440,0 1440,580 1235,580" fill="#E11D2E" opacity="0.28" />
+                <path
+                  d="M1140,580 C1280,490 1375,355 1440,215 L1440,580 Z"
+                  fill="#E11D2E"
+                />
+                <polygon points="1440,115 1440,220 1378,345" fill="#FACC15" />
+              </svg>
+
+              {/* Contenido Principal del Hero (Columna Izquierda) */}
+              <div className="relative z-10 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-10 py-16 sm:py-20 lg:py-24">
+                <div className="max-w-2xl space-y-5 text-left">
+                  {/* Título Principal Imponente */}
+                  <h1 className="font-headline text-[34px] sm:text-[46px] lg:text-[54px] font-extrabold tracking-tight leading-[1.06] text-white uppercase drop-shadow-sm text-balance">
+                    <span className="block">EL PODER DE LOS</span>
+                    <span className="block">ESTUDIANTES -</span>
+                    <span className="block mt-0.5">
+                      <span className="text-[#EE1D23]">FUL</span>{' '}
+                      <span className="text-white">2026-2028</span>
                     </span>
                   </h1>
 
-                  {/* Subtítulo */}
-                  <p className="font-body text-body-lg text-white/90 max-w-2xl text-pretty leading-relaxed">
-                    Defensa de los derechos estudiantiles, desarrollo académico, deporte, cultura y proyección social para Santa Cruz de la Sierra.
+                  {/* Subtexto */}
+                  <p className="font-body text-base sm:text-lg lg:text-[20px] font-medium text-white/95 max-w-xl leading-snug text-pretty">
+                    Defendiendo tus derechos y construyendo el futuro de nuestra universidad
                   </p>
 
-                  {/* Botones de Acción (CTA) */}
-                  <div className="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-4">
-                    {/* Botón primario en Rojo Carmesí */}
+                  {/* Botones Principales del Hero */}
+                  <div className="pt-3 flex flex-wrap items-center gap-3.5 sm:gap-4">
+                    {/* Botón primario en color rojo */}
                     <button
                       type="button"
-                      onClick={() => navigateTo('eventos')}
+                      onClick={() => navigateTo('atencion')}
                       data-component-id="hero-cta-primary"
-                      className="inline-flex items-center gap-2.5 px-8 py-4 bg-secondary text-on-secondary font-headline text-label-lg font-bold rounded-full shadow-lg hover:bg-secondary/90 hover:scale-102 hover:shadow-xl transition-all duration-150 cursor-pointer"
+                      className="inline-flex items-center justify-center px-7 py-3.5 bg-[#E11D2E] hover:bg-[#C21423] text-white font-headline text-sm sm:text-[15px] font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-150 cursor-pointer whitespace-nowrap"
                     >
-                      <span className="material-symbols-outlined text-[22px]">
-                        event_available
-                      </span>
-                      <span>Ver Eventos Activos</span>
+                      Servicios y Becas
                     </button>
 
-                    {/* Botón secundario en contorno blanco */}
+                    {/* Botón secundario con borde blanco (outline) */}
                     <a
                       href={buildDynamicWhatsAppUrl(
-                        portalConfig.whatsappGeneral,
-                        'Hola FUL UAGRM, me gustaría contactar por WhatsApp'
+                        portalConfig.whatsappDefensoria,
+                        'Hola Defensoría FUL UAGRM, deseo escribir una consulta o denuncia estudiantil.'
                       )}
                       target="_blank"
                       rel="noopener noreferrer"
                       data-component-id="hero-cta-secondary"
-                      className="inline-flex items-center gap-2.5 px-7 py-3.5 border-2 border-white text-white font-headline text-label-lg font-bold rounded-full hover:bg-white hover:text-primary transition-all duration-150 cursor-pointer"
+                      className="inline-flex items-center justify-center px-7 py-3.5 border-2 border-white/90 text-white hover:bg-white hover:text-[#002855] font-headline text-sm sm:text-[15px] font-bold rounded-full transition-all duration-150 cursor-pointer whitespace-nowrap backdrop-blur-[2px]"
                     >
-                      <span className="material-symbols-outlined text-[22px] text-accent">
-                        chat
-                      </span>
-                      <span>Contactar por WhatsApp</span>
+                      Escríbenos / Denuncias
                     </a>
-                  </div>
-
-                  {/* Indicadores rápidos de impacto estudiantil */}
-                  <div className="pt-6 grid grid-cols-3 gap-4 border-t border-white/15 max-w-lg mx-auto lg:mx-0">
-                    <div>
-                      <div className="font-headline text-2xl font-bold text-white tabular-nums">
-                        18+
-                      </div>
-                      <div className="font-body text-xs text-white/70">
-                        Facultades integradas
-                      </div>
-                    </div>
-                    <div>
-                      <div className="font-headline text-2xl font-bold text-white tabular-nums">
-                        100k+
-                      </div>
-                      <div className="font-body text-xs text-white/70">
-                        Estudiantes morenianos
-                      </div>
-                    </div>
-                    <div>
-                      <div className="font-headline text-2xl font-bold text-accent tabular-nums">
-                        100%
-                      </div>
-                      <div className="font-body text-xs text-white/70">
-                        Compromiso y gestión
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Columna Derecha Hero: Tarjeta Destacada Oficial FUL */}
-                <div className="w-full max-w-sm lg:max-w-md shrink-0">
-                  <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 sm:p-8 text-white shadow-2xl relative overflow-hidden">
-                    <div className="absolute -top-12 -right-12 w-40 h-40 bg-secondary/30 rounded-full blur-2xl pointer-events-none"></div>
-
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="w-16 h-16 rounded-xl bg-white p-1.5 shadow-md flex items-center justify-center shrink-0">
-                        <img
-                          src={OFFICIAL_LOGOS.ful}
-                          alt="Escudo Oficial FUL"
-                          className="w-full h-full object-contain rounded-lg"
-                        />
-                      </div>
-                      <div>
-                        <span className="text-xs uppercase font-headline tracking-widest text-accent font-semibold">
-                          Oficina Central
-                        </span>
-                        <h3 className="font-headline text-title-lg font-bold text-white">
-                          FUL UAGRM
-                        </h3>
-                        <p className="font-body text-xs text-white/80">
-                          Gestión Universitaria 2026–2028
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="space-y-3.5 mb-6 text-sm text-white/90">
-                      <div className="flex items-start gap-3">
-                        <span className="material-symbols-outlined text-secondary text-[20px] shrink-0 mt-0.5">
-                          verified
-                        </span>
-                        <span>
-                          <strong>Secretaría Ejecutiva:</strong> Yordy Roca
-                        </span>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <span className="material-symbols-outlined text-secondary text-[20px] shrink-0 mt-0.5">
-                          schedule
-                        </span>
-                        <span>
-                          <strong>Atención presencial:</strong> Lun a Vie, 08:00 a 18:30
-                        </span>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <span className="material-symbols-outlined text-secondary text-[20px] shrink-0 mt-0.5">
-                          pin_drop
-                        </span>
-                        <span>Edificio FUL, Campus Universitario (2do Anillo)</span>
-                      </div>
-                    </div>
-
-                    <div className="pt-4 border-t border-white/15">
-                      <button
-                        type="button"
-                        onClick={() => navigateTo('atencion')}
-                        className="w-full py-3 px-4 bg-white text-primary font-headline text-label-md font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-light-surface-container transition-colors shadow cursor-pointer"
-                      >
-                        <span>Canales de Asesoría y Derechos</span>
-                        <span className="material-symbols-outlined text-[18px]">
-                          arrow_forward
-                        </span>
-                      </button>
-                    </div>
                   </div>
                 </div>
               </div>

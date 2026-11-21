@@ -31,6 +31,7 @@ import {
   PORTAL_EVENTS,
   PORTAL_NEWS,
   ReelItem,
+  resolveEventImage,
   TIKTOK_REELS,
   UAGRM_FACULTIES,
 } from './data/portalData';
@@ -306,7 +307,7 @@ export function mapFirestoreEventoToEventItem(docData: FirestoreEvento): EventIt
     dateLabel: docData.fechaEvento,
     shortDate: docData.fechaEvento,
     description: docData.descripcion,
-    image: docData.imagenUrl,
+    image: resolveEventImage(docData.imagenUrl, category, `${docData.id} ${docData.titulo}`),
     location: docData.lugar,
     organizer: docData.organizador,
     quota: `${docData.cupoMaximo} cupos habilitados (${docData.estado})`,
